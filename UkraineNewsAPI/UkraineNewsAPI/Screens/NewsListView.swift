@@ -10,29 +10,26 @@ import SwiftUI
 struct NewsListView: View {
     
     @StateObject var viewModel = NewsListViewModel()
-
+    
     var body: some View {
         NavigationView {
             List(viewModel.searchText == "" ? viewModel.news : viewModel.updatedArticles) { news in
-                NewsListCell(article: news)
-                    .onTapGesture {
-                        viewModel.selectedNews = news
-                        viewModel.isShowinfSafariView = true
-                    }
-                    .listRowSeparatorTint(.gray)
+                NewsListCell(article: news, viewModel: viewModel)
             }
             .listStyle(.plain)
-            .navigationTitle(("Ukraine News"))
+            .navigationTitle((viewModel.navigationTitleText))
             .searchable(text: $viewModel.searchText)
-        }
-        .fullScreenCover(isPresented: $viewModel.isShowinfSafariView) {
-            SafariView(url: URL(string: viewModel.selectedNews?.url ?? "") ?? URL(string: "")!)
         }
         .onAppear {
             viewModel.getNews()
         }
         .onChange(of: viewModel.searchText) { searchValue in
-            viewModel.updatedArticles = viewModel.news.filter { $0.title.contains(searchValue)}
+            withAnimation {
+                viewModel.getSearchResult(with: searchValue)
+            }
+        }
+        .fullScreenCover(isPresented: $viewModel.isShowinfSafariView) {
+            viewModel.showNewsInSafari()
         }
         
         if viewModel.isLoading {

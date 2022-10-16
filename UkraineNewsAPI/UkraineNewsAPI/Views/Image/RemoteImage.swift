@@ -30,7 +30,7 @@ struct RemoteImage: View {
             image
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .cornerRadius(10)
+                .cornerRadius(7)
                 .shadow(color: .black.opacity(0.6), radius: 5, x: 7, y: 7)
         } else {
             Image("news-placeholder")

@@ -2,7 +2,7 @@
 //  SafariView.swift
 //  UkraineNewsAPI
 //
-//  Created by Эдип on 14.10.2022.
+//  Created by Эдип on 16.10.2022.
 //
 
 import SwiftUI

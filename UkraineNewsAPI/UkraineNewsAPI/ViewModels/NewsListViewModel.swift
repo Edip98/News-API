@@ -9,6 +9,7 @@ import SwiftUI
 
 final class NewsListViewModel: ObservableObject {
     
+    var navigationTitleText = "Ukraine News"
     @Published var news: [Article] = []
     @Published var isLoading = false
     @Published var selectedNews: Article?
@@ -32,18 +33,13 @@ final class NewsListViewModel: ObservableObject {
         }
     }
     
-    func getSearchResult(text: String) -> [Article] {
-        NetworkManager.shared.search(with: text) { [self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let news):
-                    self.news = news
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
-        return news.filter({$0.title.contains(text)})
+    func getSearchResult(with searchValue: String) {
+        updatedArticles = news.filter { $0.title.contains(searchValue)}
+    }
+    
+    func showNewsInSafari() -> SafariView? {
+        guard let url = URL(string: selectedNews?.url ?? "") else { return nil }
+        return SafariView(url: url)
     }
 }
 

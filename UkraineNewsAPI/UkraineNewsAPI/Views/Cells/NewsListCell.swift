@@ -10,51 +10,61 @@ import SwiftUI
 struct NewsListCell: View {
     
     let article: Article
+    @StateObject var viewModel: NewsListViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(spacing: 10) {
             
             NewsRemoteImage(urlString: article.urlToImage ?? "")
             
             Text(article.title)
                 .font(.title3)
                 .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .lineLimit(3)
             
             HStack {
                 Text(article.description ?? "")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
                     .lineLimit(4)
-                    .frame(width: 300, alignment: .leading)
+                    .frame(width: 315, alignment: .leading)
                 
                 Spacer()
                 
                 Image(systemName: "chevron.right")
                     .foregroundColor(.gray)
-                    .font(.system(size: 25))
+                    .font(.system(size: 30))
+                    .onTapGesture {
+                        viewModel.selectedNews = article
+                        viewModel.isShowinfSafariView = true
+                    }
             }
             
-            Text(article.author ?? "")
-                .foregroundColor(.secondary)
-                .lineLimit(1)
-            
-            HStack {
-                Text(article.source.name)
-                    .font(.system(size: 14))
-                    .foregroundColor(.gray)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(article.author ?? "")
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
                 
-                Spacer()
-                
-                Text(article.publishedAt.formattedDate())
-                    .font(.system(size: 14))
-                    .foregroundColor(.gray)
+                HStack {
+                    Text(article.source.name)
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
+                    
+                    Spacer()
+                    
+                    Text(article.publishedAt.formattedDate())
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
+                }
             }
         }
-        .frame(minWidth: 0, maxWidth: .infinity)
     }
 }
 
 struct NewsListCell_Previews: PreviewProvider {
     static var previews: some View {
-        NewsListCell(article: MockData.sampleNews)
+        NewsListCell(article: MockData.sampleNews, viewModel: NewsListViewModel())
     }
 }

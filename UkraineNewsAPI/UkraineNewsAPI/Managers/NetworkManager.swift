@@ -79,26 +79,5 @@ final class NetworkManager {
         
         task.resume()
     }
-    
-    public func search(with query: String, comleteion: @escaping (Result<[Article], Error>) -> Void) {
-        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
-        let urlString = baseURL + "e&q=\(query)"
-        guard let url = URL(string: urlString) else { return }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, _, error in
-            if let error = error {
-                comleteion(.failure(error))
-            }
-            else if let data = data {
-                do {
-                    let result = try JSONDecoder().decode(APIResponse.self, from: data)
-                    comleteion(.success(result.articles))
-                } catch  {
-                    comleteion(.failure(error))
-                }
-            }
-        }
-        task.resume()
-    }
 }
 
