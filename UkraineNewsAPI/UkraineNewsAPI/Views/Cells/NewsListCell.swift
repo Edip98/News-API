@@ -10,7 +10,8 @@ import SwiftUI
 struct NewsListCell: View {
     
     let article: Article
-    @StateObject var viewModel: NewsListViewModel
+    @State private var animationAmount = 1.0
+    @ObservedObject var viewModel: NewsListViewModel
     
     var body: some View {
         VStack(spacing: 10) {
@@ -24,7 +25,7 @@ struct NewsListCell: View {
                 .lineLimit(3)
             
             HStack {
-                Text(article.description ?? "")
+                Text(article.description ?? "На жаль, опис відсутній. Щоб дізнатися докладніше, натисніть стрілочку.")
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .lineLimit(4)
@@ -33,8 +34,14 @@ struct NewsListCell: View {
                 Spacer()
                 
                 Image(systemName: "chevron.right")
-                    .foregroundColor(.gray)
-                    .font(.system(size: 30))
+                    .foregroundColor(.secondary)
+                    .font(.system(size: 25))
+                    .scaleEffect(animationAmount)
+                    .animation(
+                        .easeInOut(duration: 1)
+                            .repeatForever(autoreverses: true),
+                        value: animationAmount
+                    )
                     .onTapGesture {
                         viewModel.selectedNews = article
                         viewModel.isShowinfSafariView = true
@@ -59,6 +66,12 @@ struct NewsListCell: View {
                         .foregroundColor(.gray)
                 }
             }
+        }
+        .onAppear {
+            animationAmount += 0.5
+        }
+        .onDisappear {
+            animationAmount -= 0.5
         }
     }
 }
